@@ -16,6 +16,7 @@ class BinarySearchTree {
   }
 
   add(data) {
+    // console.debug("add");
     // console.debug(data);
     if (this.rootNode == null) {
       this.rootNode = new Node(data, null);
@@ -76,25 +77,42 @@ class BinarySearchTree {
   }
 
   remove(data) {
-    let goal = this.find(data);
-    if (!goal) return false;
+    // console.debug("rem");
+    // console.debug(data);
 
+    let goal = this.find(data);
+
+    if (!goal) return false;
     if (goal.right) {
       let min = this.minFrom(goal.right);
+
       goal.data = min.data;
       if (min.parent !== goal) {
         min.parent.left = min.right;
+      } else {
+        goal.right = min.right;
+        // min.parent = goal.parent;
+        // if (goal.parent.left === goal) {
+        //   goal.parent.left = min;
+        // } else {
+        //   goal.parent.right = min;
+        // }
       }
       if (min.right) {
         min.right.parent = min.parent;
       }
     } else {
       if (goal.parent === this.rootNode) {
-        this.rootNode = goal.left;
+        if (goal.parent.left === goal) {
+          this.rootNode.left = goal.left;
+        } else {
+          this.rootNode.right = goal.left;
+        }
+
         return true;
       }
 
-      if (goal.parent.right == goal) {
+      if (goal.parent.right === goal) {
         goal.parent.right = goal.left;
       } else {
         goal.parent.left = goal.left;
@@ -121,7 +139,6 @@ class BinarySearchTree {
   maxFrom(currentNode) {
     while (currentNode.right) {
       currentNode = currentNode.right;
-      console.log(currentNode);
     }
     return currentNode;
   }
